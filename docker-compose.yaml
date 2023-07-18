@@ -1,0 +1,31 @@
+version: "3"
+services:
+  db:
+    image: postgres
+    environment:
+        POSTGRES_PASSWORD: password123
+        POSTGRES_USER: user123
+        POSTGRES_DB: db123
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "3001:3001"
+  frontend:
+    build:
+      context: ./frontend
+    volumes:
+      - /app/node_modules
+      - ./frontend:/app
+    ports:
+      - '8080:3000'
+    restart: on-failure
+    container_name: web-app
+  scraper:
+    build:
+      context: ./sreality-scraper
+    restart: on-failure
+    depends_on:
+      - backend
+      - db
+    container_name: scraper

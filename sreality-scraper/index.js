@@ -1,4 +1,57 @@
 import puppeteer from "puppeteer";
+import fetch from 'node-fetch';
+
+async function getSetupDatabase() {
+    try {
+        const response = await fetch('http://backend:3001/setup');
+
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log(result)
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function getData() {
+    try {
+        const response = await fetch('http://backend:3001/');
+
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log(result)
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+async function postFlats(flats) {
+    //console.log(JSON.stringify(flats))
+    try {
+        const response = await fetch("http://backend:3001/", {
+            method: "post",
+            body: JSON.stringify(flats),
+            headers: { "Content-Type": "application/json" }
+        })
+        if (!response.ok) {
+            throw new Error(`Error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log(result)
+        return result;
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 let browser;
 const products = [];
@@ -8,7 +61,7 @@ const products = [];
  * @returns {Promise<Page>} A new page object.
  */
 const initializePuppeteer = async () => {
-    browser = await puppeteer.launch({ headless: 'new' });
+    browser = await puppeteer.launch({ executablePath: '/usr/bin/google-chrome', headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox'],});
     return await browser.newPage();
 };
 
@@ -77,10 +130,14 @@ const scrapeProducts = async () => {
         const page = await initializePuppeteer();
         await page.goto("https://www.sreality.cz/en/search/for-sale/apartments");
 
-        const products = await handlePagination(page);
-        console.log(products.length, "products found");
-        console.log(products, "products");
-
+        const flats = await handlePagination(page);
+        console.log(flats.length, "products found");
+        console.log(flats, "products");
+        if(flats.length > 0) {
+            await getSetupDatabase();
+            await postFlats(flats);
+            await getData();
+        }
         await closePuppeteer();
     } catch (err) {
         console.error(err);

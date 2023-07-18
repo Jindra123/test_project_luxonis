@@ -18,10 +18,9 @@ app.get('/', async (req, res) => {
 })
 
 app.post('/', async (req, res) => {
-    const { heading, image } = req.body
     try {
-        await pool.query('INSERT INTO flats (heading, image) VALUES ($1, $2)', [heading, image])
-        res.status(200).send({message: 'Flat added'})
+        await pool.query('INSERT INTO flats (data) VALUES ($1)', [JSON.stringify(req.body)])
+        res.status(200).send({message: 'Flats added'})
     } catch (err) {
         console.error(err.message)
         res.sendStatus(500)
@@ -30,7 +29,7 @@ app.post('/', async (req, res) => {
 
 app.get('/setup', async (req, res) => {
     try {
-        await pool.query('CREATE TABLE IF NOT EXISTS flats (id SERIAL PRIMARY KEY, heading VARCHAR(100) NOT NULL, image VARCHAR(500) NOT NULL)')
+        await pool.query('CREATE TABLE IF NOT EXISTS flats (id serial PRIMARY KEY, data JSON)')
         res.status(200).send({message: 'Table created'})
     } catch (err) {
         console.error(err.message)
