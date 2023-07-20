@@ -136,7 +136,6 @@ const scrapeProducts = async () => {
         if(flats.length > 0) {
             await getSetupDatabase();
             await postFlats(flats);
-            await getData();
         }
         await closePuppeteer();
     } catch (err) {

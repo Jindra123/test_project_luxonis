@@ -1,24 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import PaginatedItems from "./components/paginatedItems";
 
-function App() {
+const App = () => {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="grid place-items-center my-10 mx-2">
+        <h1 className="mb-8 text-3xl font-extrabold leading-none tracking-tight text-black md:text-5xl lg:text-6xl">Best apartments <span
+                className="underline underline-offset-3 decoration-8 decoration-purple">in Czech</span>
+        </h1>
+        <PaginatedItems itemsPerPage={8} />
     </div>
   );
 }

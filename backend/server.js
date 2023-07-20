@@ -1,9 +1,12 @@
 const express = require('express')
+const cors = require('cors');
 const pool = require('./db')
 
 const port = 3001
 
 const app = express()
+
+app.use(cors())
 app.use(express.json())
 
 //routes
@@ -37,6 +40,6 @@ app.get('/setup', async (req, res) => {
     }
 })
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server is up on port ${port}`)
 })
